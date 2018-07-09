@@ -30,9 +30,10 @@ func main() {
 	}
 	fmt.Println("connect success")
 	fmt.Println(read(db))
-	add(db)
+	//	add(db)
+	//	fmt.Println(read(db))
+	remove(db, "4")
 	fmt.Println(read(db))
-
 }
 
 func read(db *sql.DB) []User {
@@ -59,6 +60,17 @@ func add(db *sql.DB) bool {
 	_, err := results.Exec("1092018019065", "พอยพอย", "ซันชาย", 1995, "ตะวัน", "ซันชาย", "สมิตา", "ซันชาย", 988, 1)
 	if err != nil {
 		panic(err)
+		return false
+	}
+	return true
+}
+
+func remove(db *sql.DB, id string) bool {
+	statement, _ := db.Prepare("DELETE FROM testsck.user WHERE user_id=?")
+
+	_, err := statement.Exec(id)
+	if err != nil {
+		panic(err.Error())
 		return false
 	}
 	return true
