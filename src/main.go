@@ -29,10 +29,11 @@ func main() {
 
 	}
 	fmt.Println("connect success")
+	update(db, "3", "มานะ")
 	fmt.Println(read(db))
 	//	add(db)
 	//	fmt.Println(read(db))
-	remove(db, "4")
+	//	remove(db, "2")
 	fmt.Println(read(db))
 }
 
@@ -69,6 +70,17 @@ func remove(db *sql.DB, id string) bool {
 	statement, _ := db.Prepare("DELETE FROM testsck.user WHERE user_id=?")
 
 	_, err := statement.Exec(id)
+	if err != nil {
+		panic(err.Error())
+		return false
+	}
+	return true
+}
+
+func update(db *sql.DB, id string, firstnameFather string) bool {
+	statement, _ := db.Prepare("UPDATE `user` SET  firstname_father= ? WHERE user_id=?")
+
+	_, err := statement.Exec(firstnameFather, id)
 	if err != nil {
 		panic(err.Error())
 		return false
