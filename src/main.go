@@ -29,12 +29,9 @@ func main() {
 
 	}
 	fmt.Println("connect success")
-	update(db, "3", "มานะ")
-	fmt.Println(read(db))
-	//	add(db)
 	//	fmt.Println(read(db))
-	//	remove(db, "2")
-	fmt.Println(read(db))
+	fmt.Println(readById(db, "1600100386841"))
+
 }
 
 func read(db *sql.DB) []User {
@@ -68,7 +65,7 @@ func add(db *sql.DB) bool {
 
 func remove(db *sql.DB, id string) bool {
 	statement, _ := db.Prepare("DELETE FROM testsck.user WHERE user_id=?")
-
+	defer statement.Close()
 	_, err := statement.Exec(id)
 	if err != nil {
 		panic(err.Error())
@@ -79,11 +76,23 @@ func remove(db *sql.DB, id string) bool {
 
 func update(db *sql.DB, id string, firstnameFather string) bool {
 	statement, _ := db.Prepare("UPDATE `user` SET  firstname_father= ? WHERE user_id=?")
-
+	defer statement.Close()
 	_, err := statement.Exec(firstnameFather, id)
 	if err != nil {
 		panic(err.Error())
 		return false
 	}
 	return true
+}
+
+func readById(db *sql.DB, citizenId string) User {
+	results, _ := db.Query("SELECT * FROM user WHERE citizen_id=?", citizenId)
+	var user User
+	for results.Next() {
+		err := results.Scan(&user.ID, &user.Firstname, &user.Lastname, &user.CitizenID, &user.BirthYear, &user.FirstnameFather, &user.LastnameFather, &user.FirstnameMother, &user.LastnameMother, &user.SoldierID, &user.AddressID)
+		if err != nil {
+			panic(err)
+		}
+	}
+	return user
 }
