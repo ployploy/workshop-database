@@ -30,6 +30,8 @@ func main() {
 	}
 	fmt.Println("connect success")
 	fmt.Println(read(db))
+	add(db)
+	fmt.Println(read(db))
 
 }
 
@@ -45,4 +47,19 @@ func read(db *sql.DB) []User {
 		userList = append(userList, user)
 	}
 	return userList
+}
+
+func add(db *sql.DB) bool {
+	results, _ := db.Prepare(`Insert INTO user
+	(citizen_id,firstname,lastname,birthyear
+		,firstname_father,lastname_father,firstname_mother,lastname_mother,soldier_id
+		,address_id)
+		VALUES(?,?,?,?,?,?,?,?,?,?)`) //เป็นการเตรียมค่าเพื่อจะทำงาน
+
+	_, err := results.Exec("1092018019065", "พอยพอย", "ซันชาย", 1995, "ตะวัน", "ซันชาย", "สมิตา", "ซันชาย", 988, 1)
+	if err != nil {
+		panic(err)
+		return false
+	}
+	return true
 }
